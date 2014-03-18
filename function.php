@@ -123,7 +123,7 @@ function createArchive($keyword,$description,$tags,$screen_name,$user_id,$debug=
         INDEX `iso_language_code` (`iso_language_code`),
         INDEX `geo_type` (`geo_type`),
         INDEX `time` (`time`)
-        ) ENGINE=MyISAM DEFAULT CHARSET=latin1";
+        ) ENGINE=MyISAM DEFAULT CHARSET=utf8";
        
     $r = mysql_query($create_table, $db->connection);
        
