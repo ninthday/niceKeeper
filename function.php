@@ -247,7 +247,13 @@ class YourTwapperKeeper {
         return($response);
     }
 
-// check status of archiving processes
+    /**
+     * Check status of archiving processes
+     * 
+     * @global type $db
+     * @param type $process_array
+     * @return array
+     */
     function statusArchiving($process_array) {
         global $db;
         // If PIDs > 0 - we are considered running

@@ -101,13 +101,24 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
                 <div class="col-xs-3">
                     <div class="panel panel-success">
                         <div class="panel-heading">Archiving processes<span class="label label-success pull-right">3</span></div>
-
+                        <div class="panel-body">
+                            <?php
+                            $archiving_status = $tk->statusArchiving($archive_process_array);
+                            echo "<p>" . $archiving_status[1] . "</p>";
+                            if (in_array($_SESSION['access_token']['screen_name'], $admin_screen_name)) {
+                                if ($archiving_status[0] == FALSE) {
+                                    echo '<a href="startarchiving.php" class="btn btn-success btn-sm" title="Start Archving"><span class="glyphicon glyphicon-play"></span> Start</a>';
+                                } else {
+                                    echo '<a href="stoparchiving.php" class="btn btn-danger btn-sm" title="Stop Archiving"><span class="glyphicon glyphicon-stop"></span> Stop</a>';
+                                }
+                            }
+                            ?>
+                        </div>
                         <ul class="list-group">
                             <li class="list-group-item"><span class="glyphicon glyphicon-tasks"></span> PID:</li>
                             <li class="list-group-item"><span class="glyphicon glyphicon-tasks"></span> PID:</li>
                             <li class="list-group-item"><span class="glyphicon glyphicon-tasks"></span> PID:</li>
                         </ul>
-
                     </div>
                 </div>
             </div>
@@ -130,19 +141,6 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
                             <input type='submit' class="btn btn-primary" value ='Create Archive'/>
                         </form>
                     </div>
-                    <?php
-                    // allow start stop (only if in admin group)
-                    if (in_array($_SESSION['access_token']['screen_name'], $admin_screen_name)) {
-                        $archiving_status = $tk->statusArchiving($archive_process_array);
-                        if ($archiving_status[0] == FALSE) {
-                            echo "<a href='startarchiving.php'><img src='./resources/play_24.png' alt='Start Archving' title='Start Archiving'/></a>";
-                        } else {
-                            echo "<a href='stoparchiving.php'><img src='./resources/stop_24.png' alt='Stop Archving' title='Stop Archiving'/></a>";
-                        }
-                        echo "<b>" . $archiving_status[1] . "<b>";
-                    }
-                    ?>
-                    </p>
                 <?php } ?>
             </div>
             <hr>
