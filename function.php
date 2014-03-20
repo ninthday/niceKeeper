@@ -251,21 +251,39 @@ class YourTwapperKeeper {
      * Check status of archiving processes
      * 
      * @global type $db
-     * @param type $process_array
-     * @return array
+     * @param array $process_array
+     * @return array [0]=>(bool)runing state, [1]=>(array)pids, [2]=>State content
      */
     function statusArchiving($process_array) {
         global $db;
         // If PIDs > 0 - we are considered running
         $running = TRUE;
         $pids = '';
+        $pids_array = array();
         $shouldBeRunning = 1;
+        $process_string = implode('\', \'', $process_array);
+        $sql = 'SELECT * FROM `processes` WHERE `process` IN (\'' . $process_string . '\')';
+        $rs = mysql_query($sql, $db->connection);
+
+        while ($row = mysql_fetch_assoc($rs)) {
+            $pids_array[] = $row['pid'];
+            exec('ps ' . $row['pid'], $PROC);
+            if (count($PROC) < 2) {
+                $running = FALSE;
+            }
+            if ($row['pid'] == 0) {
+                $running = FALSE;
+                $shouldBeRunning = FALSE;
+            }
+        }
+        /**
         foreach ($process_array as $key => $value) {
             $q = "select * from processes where process = '$value'";
             $r = mysql_query($q, $db->connection);
             $r = mysql_fetch_assoc($r);
             $pid = $r['pid'];
             exec("ps $pid", $PROC);
+            
             if (count($PROC) < 2) {
                 $running = FALSE;
             }
@@ -276,21 +294,23 @@ class YourTwapperKeeper {
             }
         }
         $pids = substr($pids, 0, -1);
-
-        $result = array();
+        **/
+        $rtn_array = array();
         if ($running == FALSE) {
-            $result[0] = FALSE;
+            $rtn_array[0] = FALSE;
+            $rtn_array[1] = $pids_array;
             if ($shouldBeRunning == 1) {
-                $result[1] = "<div style='color:red'>Archiving processes have died.  (PIDS = $pids) </div>";
+                $rtn_array[2] = "Archiving processes have died.";
             } else {
-                $result[1] = "<div style='color:red'>Archiving processes are NOT running</div>";
+                $rtn_array[2] = "Archiving processes are NOT running.";
             }
         } else {
-            $result[0] = TRUE;
-            $result[1] = "<div style='color:green'>Archiving processes are running (PIDS = $pids)</div>";
+            $rtn_array[0] = TRUE;
+            $rtn_array[1] = $pids_array;
+            $rtn_array[2] = "Archiving processes are running.";
         }
 
-        return($result);
+        return $rtn_array;
     }
 
 // kill archiving process

@@ -99,13 +99,16 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
                     <p><center><a href='index.php'><img src='resources/ownerLogo.png'/></a></center></p>
                 </div>
                 <div class="col-xs-3">
-                    <div class="panel panel-success">
-                        <div class="panel-heading">Archiving processes<span class="label label-success pull-right">3</span></div>
+                    <?php
+                    $archiving_status = $tk->statusArchiving($archive_process_array);
+                    $stat_color = ($archiving_status[0])?'success':'danger';
+                    ?>
+                    <div class="panel panel-<?php echo $stat_color; ?>">
+                        <div class="panel-heading">Processes State<span class="label label-success pull-right"><?php echo count($archiving_status[1]); ?></span></div>
                         <div class="panel-body">
                             <?php
-                            $archiving_status = $tk->statusArchiving($archive_process_array);
-                            echo "<p>" . $archiving_status[1] . "</p>";
-                            if (in_array($_SESSION['access_token']['screen_name'], $admin_screen_name)) {
+                            echo '<p class="text-' . $stat_color . '">' . $archiving_status[2] . '</p>';
+                            if (isset($_SESSION['access_token']) && in_array($_SESSION['access_token']['screen_name'], $admin_screen_name)) {
                                 if ($archiving_status[0] == FALSE) {
                                     echo '<a href="startarchiving.php" class="btn btn-success btn-sm" title="Start Archving"><span class="glyphicon glyphicon-play"></span> Start</a>';
                                 } else {
@@ -114,11 +117,15 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
                             }
                             ?>
                         </div>
-                        <ul class="list-group">
-                            <li class="list-group-item"><span class="glyphicon glyphicon-tasks"></span> PID:</li>
-                            <li class="list-group-item"><span class="glyphicon glyphicon-tasks"></span> PID:</li>
-                            <li class="list-group-item"><span class="glyphicon glyphicon-tasks"></span> PID:</li>
-                        </ul>
+                        <?php
+                        if($logged_in && count($archiving_status[1] >0)){
+                            echo '<ul class="list-group">';
+                            foreach ($archiving_status[1] as $rd_pid) {
+                                echo '<li class="list-group-item"><span class="glyphicon glyphicon-tasks"></span> System Process ID: ' . $rd_pid . '</li>';
+                            }
+                            echo '</ul>';
+                        }
+                        ?>
                     </div>
                 </div>
             </div>
