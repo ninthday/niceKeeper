@@ -96,7 +96,7 @@ class YourTwapperKeeper {
             return($response);
         }
 
-        $q = "insert into archives values ('','$keyword','$description','$tags','$screen_name','$user_id','','" . time() . "')";
+        $q = "insert into archives values ('','$keyword','$description','$tags','$screen_name','$user_id','','" . $this->getNowTime() . "')";
         $r = mysql_query($q, $db->connection);
         $lastid = mysql_insert_id();
 
@@ -253,6 +253,7 @@ class YourTwapperKeeper {
      * @global type $db
      * @param array $process_array
      * @return array [0]=>(bool)runing state, [1]=>(array)pids, [2]=>State content
+     * @version nicekeeper v.0.1.2
      */
     function statusArchiving($process_array) {
         global $db;
@@ -277,24 +278,24 @@ class YourTwapperKeeper {
             }
         }
         /**
-        foreach ($process_array as $key => $value) {
-            $q = "select * from processes where process = '$value'";
-            $r = mysql_query($q, $db->connection);
-            $r = mysql_fetch_assoc($r);
-            $pid = $r['pid'];
-            exec("ps $pid", $PROC);
-            
-            if (count($PROC) < 2) {
-                $running = FALSE;
-            }
-            $pids .= $pid . ",";
-            if ($pid == 0) {
-                $running = FALSE;
-                $shouldBeRunning = FALSE;
-            }
-        }
-        $pids = substr($pids, 0, -1);
-        **/
+          foreach ($process_array as $key => $value) {
+          $q = "select * from processes where process = '$value'";
+          $r = mysql_query($q, $db->connection);
+          $r = mysql_fetch_assoc($r);
+          $pid = $r['pid'];
+          exec("ps $pid", $PROC);
+
+          if (count($PROC) < 2) {
+          $running = FALSE;
+          }
+          $pids .= $pid . ",";
+          if ($pid == 0) {
+          $running = FALSE;
+          $shouldBeRunning = FALSE;
+          }
+          }
+          $pids = substr($pids, 0, -1);
+         * */
         $rtn_array = array();
         if ($running == FALSE) {
             $rtn_array[0] = FALSE;
@@ -325,6 +326,51 @@ class YourTwapperKeeper {
         exec($command, $op);
         $pid = (int) $op[0];
         return ($pid);
+    }
+
+    /**
+     * Save Archive to saved_archives table
+     * 
+     * @param int $id Archive ID
+     * @return array [0]=>(bool)Successful or NOT, [1]=>Return message.
+     * @author Ninthday <jeffy@ninthday.info>
+     * @since nicekeeper v.0.1.3
+     */
+    public function saveArchive($id) {
+        global $db;
+        $rtn = array();
+        $sql = 'INSERT INTO `saved_archives` '
+                . 'SELECT `id`, `keyword`, `description`, `tags`, `screen_name`, `user_id`, `count`, `create_time`, NOW() '
+                . 'FROM `archives` WHERE `id`=' . $id;
+        $rs = mysql_query($sql, $db->connection);
+        if (!$rs) {
+            $rtn[0] = FALSE;
+            $rtn[1] = 'It has problem in Save Archive to table.';
+        } else {
+            $sql = 'DELETE FROM `archives` WHERE `id`=' . $id;
+            $rs = mysql_query($sql, $db->connection);
+            if (!$rs) {
+                $rtn[0] = FALSE;
+                $rtn[1] = 'It has problem in Delete from Archive table.';
+            } else {
+                $rtn[0] = TRUE;
+                $rtn[1] = 'Archive has saved.';
+            }
+            $rtn[0] = TRUE;
+            $rtn[1] = 'Archive has saved.';
+        }
+        return $rtn;
+    }
+
+    /**
+     * Get Now Time String with MySQL DATETIME format
+     * 
+     * @author Ninthday <jeffy@ninthday.info>
+     * @return string MySQL Datetime format
+     * @since nicekeeper v.0.1.3
+     */
+    public function getNowTime() {
+        return date('Y-m-d H:i:s');
     }
 
 }

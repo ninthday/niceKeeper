@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS `archives` (
   `screen_name` varchar(50) NOT NULL,
   `user_id` varchar(50) NOT NULL,
   `count` bigint(20) NOT NULL,
-  `create_time` int(11) NOT NULL,
+  `create_time` datetime NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `keyword` (`keyword`),
   KEY `description` (`description`),
@@ -74,3 +74,25 @@ CREATE TABLE IF NOT EXISTS `rawstream` (
   FULLTEXT KEY `text` (`text`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+-- --------------------------------------------------------
+--
+-- Table structure for table `saved_archives`
+--
+
+CREATE TABLE IF NOT EXISTS `saved_archives` (
+  `id` bigint(20) NOT NULL,
+  `keyword` varchar(30) NOT NULL,
+  `description` varchar(250) NOT NULL,
+  `tags` varchar(250) NOT NULL,
+  `screen_name` varchar(50) NOT NULL,
+  `user_id` varchar(50) NOT NULL,
+  `count` bigint(20) NOT NULL,
+  `create_time` datetime NOT NULL,
+  `save_time` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `keyword` (`keyword`),
+  KEY `description` (`description`),
+  KEY `tags` (`tags`),
+  KEY `screen_name` (`screen_name`),
+  KEY `create_time` (`create_time`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;

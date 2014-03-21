@@ -174,7 +174,7 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
                         // list table of archives
                         $archives = $tk->listArchive();
                         foreach ($archives['results'] as $value) {
-                            echo "<tr><td>" . $value['id'] . "</td><td>" . $value['keyword'] . "</td><td>" . $value['description'] . "</td><td>" . $value['tags'] . "</td><td>" . $value['screen_name'] . "</td><td>" . $value['count'] . "</td><td>" . date(DATE_RFC2822, $value['create_time']) . "</td>";
+                            echo "<tr><td>" . $value['id'] . "</td><td>" . $value['keyword'] . "</td><td>" . $value['description'] . "</td><td>" . $value['tags'] . "</td><td>" . $value['screen_name'] . "</td><td>" . $value['count'] . "</td><td>" . $value['create_time'] . "</td>";
                             echo "<td>";
                             echo '<a href="archive.php?id=' . $value['id'] . '" class="btn btn-warning" title="View Archive" target="_blank"><span class="glyphicon glyphicon-th-list"></span></a>';
                             if (isset($_SESSION['access_token']) && ($_SESSION['access_token']['screen_name'] == $value['screen_name'])) {
@@ -208,8 +208,8 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
                                 echo '<div class="modal fade" id="save-arch-' . $value['id'] . '" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">';
                                 echo '<div class="modal-dialog"><div class="modal-content">';
                                 echo '<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title text-success" id="myModalLabel">Stop and Save Archive</h4></div>';
-                                echo '<div class="modal-body">Are you sure you want to <strong>Stop</strong> and <strong>Save</strong> ' . $value['keyword'] . 'archive?</div>';
-                                echo '<div class="modal-footer"><form method="post" action="save.php"><input type="hidden" name="id" value="' . $value['id'] . '"/><button type="button" class="btn btn-default" data-dismiss="modal">Close</button><button type="submit" class="btn btn-success">Stop &amp; Save</button></form></div>';
+                                echo '<div class="modal-body">Are you sure you want to <strong>Stop</strong> and <strong>Save</strong> ' . $value['keyword'] . ' archive?</div>';
+                                echo '<div class="modal-footer"><form method="post" action="save_archive.php"><input type="hidden" name="id" value="' . $value['id'] . '"/><button type="button" class="btn btn-default" data-dismiss="modal">Close</button><button type="submit" class="btn btn-success">Stop &amp; Save</button></form></div>';
                                 echo '</div></div></div>';
                             }
 
@@ -224,7 +224,7 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
                 <hr>
             </div>
             <footer>
-                <p>niceKeeper version 0.1.2 (yourTwapperKeeper <?php echo $yourtwapperkeeper_version; ?>)</p>
+                <p>niceKeeper version 0.1.3 (yourTwapperKeeper <?php echo $yourtwapperkeeper_version; ?>)</p>
             </footer>
         </div>
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
