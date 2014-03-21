@@ -101,7 +101,7 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
                 <div class="col-xs-3">
                     <?php
                     $archiving_status = $tk->statusArchiving($archive_process_array);
-                    $stat_color = ($archiving_status[0])?'success':'danger';
+                    $stat_color = ($archiving_status[0]) ? 'success' : 'danger';
                     ?>
                     <div class="panel panel-<?php echo $stat_color; ?>">
                         <div class="panel-heading">Processes State<span class="label label-success pull-right"><?php echo count($archiving_status[1]); ?></span></div>
@@ -118,7 +118,7 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
                             ?>
                         </div>
                         <?php
-                        if($logged_in && count($archiving_status[1] >0)){
+                        if ($logged_in && count($archiving_status[1] > 0)) {
                             echo '<ul class="list-group">';
                             foreach ($archiving_status[1] as $rd_pid) {
                                 echo '<li class="list-group-item"><span class="glyphicon glyphicon-tasks"></span> System Process ID: ' . $rd_pid . '</li>';
@@ -135,31 +135,33 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
                         <form class="form-inline" action='create.php' method='post' role="form">
                             <div class="form-group">
                                 <label class="sr-only" for="InputKeyword">Keyword or Hashtag</label>
-                                <input type="keyword" class="form-control" id="InputKeyword" placeholder="Keyword or Hashtag">
+                                <input type="text"  name="keyword" class="form-control" id="InputKeyword" placeholder="Keyword or Hashtag">
                             </div>
                             <div class="form-group">
                                 <label class="sr-only" for="InputDescription">Description</label>
-                                <input type="description" class="form-control" id="InputDescription" placeholder="Description">
+                                <input type="text" name="description" class="form-control" id="InputDescription" placeholder="Description">
                             </div>
                             <div class="form-group">
                                 <label class="sr-only" for="InputTags">Tags</label>
-                                <input type="tags" class="form-control" id="InputTags" placeholder="Tags">
+                                <input type="text" name="tags" class="form-control" id="InputTags" placeholder="Tags">
                             </div>
                             <input type='submit' class="btn btn-primary" value ='Create Archive'/>
                         </form>
                     </div>
                 <?php } ?>
             </div>
-            <hr>
-            <?php if (isset($_SESSION['notice'])) { ?>
-                <div class="alert alert-danger alert-dismissable">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    <strong>Sorry!</strong> <?php echo $_SESSION['notice']; ?>
-                </div>
-                <?php
-                unset($_SESSION['notice']);
-            }
-            ?> 
+            <div class="row">
+                <hr> 
+                <?php if (isset($_SESSION['notice'])) { ?>
+                    <div class="alert alert-warning alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        <span class="glyphicon glyphicon-info-sign"></span>&nbsp;<?php echo $_SESSION['notice']; ?>
+                    </div>
+                    <?php
+                    unset($_SESSION['notice']);
+                }
+                ?> 
+            </div>
             <div class="row">
                 <table class="table table-striped">
                     <thead>
@@ -174,60 +176,53 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
                         foreach ($archives['results'] as $value) {
                             echo "<tr><td>" . $value['id'] . "</td><td>" . $value['keyword'] . "</td><td>" . $value['description'] . "</td><td>" . $value['tags'] . "</td><td>" . $value['screen_name'] . "</td><td>" . $value['count'] . "</td><td>" . date(DATE_RFC2822, $value['create_time']) . "</td>";
                             echo "<td>";
-                            echo "<a href='archive.php?id=" . $value['id'] . "' target='_blank' alt='View'><img src='./resources/binoculars_24.png' alt='View Archive' title='View Archive'/></a>";
-                            if ($_SESSION['access_token']['screen_name'] == $value['screen_name']) {
-                                ?>
-                            <script type="text/javascript">
-                                $(function() {
-                                    $("#deletedialog<?php echo $value['id']; ?>").dialog({
-                                        autoOpen: false,
-                                        height: 150,
-                                        width: 800,
-                                        modal: true
-                                    });
+                            echo '<a href="archive.php?id=' . $value['id'] . '" class="btn btn-warning" title="View Archive" target="_blank"><span class="glyphicon glyphicon-th-list"></span></a>';
+                            if (isset($_SESSION['access_token']) && ($_SESSION['access_token']['screen_name'] == $value['screen_name'])) {
+                                echo '&nbsp;<a href="#" class="btn btn-info" data-toggle="modal" data-target="#edit-arch-' . $value['id'] . '" title="Edit Archive"><span class="glyphicon glyphicon-edit"></span></a>';
+                                echo '&nbsp;<a href="#" class="btn btn-danger" data-toggle="modal" data-target="#del-arch-' . $value['id'] . '" title="Delete Archive"><span class="glyphicon glyphicon-trash"></span></a>';
+                                echo '&nbsp;<a href="#" class="btn btn-success" data-toggle="modal" data-target="#save-arch-' . $value['id'] . '" title="Stop and Save Archive"><span class="glyphicon glyphicon-import"></span></a>';
 
-                                    $('#deletelink<?php echo $value['id']; ?>').click(function() {
-                                        $('#deletedialog<?php echo $value['id']; ?>').dialog('open');
-                                        return false;
-                                    });
+                                echo '<!-- Edit Modal -->';
+                                echo '<div class="modal fade" id="edit-arch-' . $value['id'] . '" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">';
+                                echo '<div class="modal-dialog"><div class="modal-content">';
+                                echo '<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>';
+                                echo '<h4 class="modal-title text-info" id="myModalLabel">Edit Archive</h4></div>';
+                                echo '<div class="modal-body">';
+                                echo '<form class="form-horizontal" method="post" action="update.php" role="form">';
+                                echo '<input type="hidden" name="id" value="' . $value['id'] . '"/>';
+                                echo '<div class="form-group"><label for="arch-des-' . $value['id'] . '" class="col-sm-2 control-label">Description</label><div class="col-sm-10"><input type="input" name="description" class="form-control" id="arch-des-' . $value['id'] . '" placeholder="Description" value="' . $value['description'] . '"></div></div>';
+                                echo '<div class="form-group"><label for="arch-tag-' . $value['id'] . '" class="col-sm-2 control-label">Tags</label><div class="col-sm-10"><input type="input" name="tags"  class="form-control" id="arch-tag-' . $value['id'] . '" placeholder="Tags" value="' . $value['tags'] . '"></div></div>';
+                                echo '</div>';
+                                echo '<div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Close</button>&nbsp;<button type="submit" class="btn btn-info">Update changes</button></div>';
+                                echo '</form></div></div></div>';
 
-                                    $("#updatedialog<?php echo $value['id']; ?>").dialog({
-                                        autoOpen: false,
-                                        height: 300,
-                                        width: 300,
-                                        modal: true
-                                    });
+                                echo '<!-- Delete Modal -->';
+                                echo '<div class="modal fade" id="del-arch-' . $value['id'] . '" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">';
+                                echo '<div class="modal-dialog"><div class="modal-content">';
+                                echo '<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title text-danger" id="myModalLabel">Delete Archive</h4></div>';
+                                echo '<div class="modal-body">Are you sure you want to delete ' . $value['keyword'] . ' archive?</div>';
+                                echo '<div class="modal-footer"><form method="post" action="delete.php"><input type="hidden" name="id" value="' . $value['id'] . '"/><button type="button" class="btn btn-default" data-dismiss="modal">Close</button><button type="submit" class="btn btn-danger">Delete</button></form></div>';
+                                echo '</div></div></div>';
 
-                                    $('#updatelink<?php echo $value['id']; ?>').click(function() {
-                                        $('#updatedialog<?php echo $value['id']; ?>').dialog('open');
-                                        return false;
-                                    });
+                                echo '<!-- Save Modal -->';
+                                echo '<div class="modal fade" id="save-arch-' . $value['id'] . '" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">';
+                                echo '<div class="modal-dialog"><div class="modal-content">';
+                                echo '<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title text-success" id="myModalLabel">Stop and Save Archive</h4></div>';
+                                echo '<div class="modal-body">Are you sure you want to <strong>Stop</strong> and <strong>Save</strong> ' . $value['keyword'] . 'archive?</div>';
+                                echo '<div class="modal-footer"><form method="post" action="save.php"><input type="hidden" name="id" value="' . $value['id'] . '"/><button type="button" class="btn btn-default" data-dismiss="modal">Close</button><button type="submit" class="btn btn-success">Stop &amp; Save</button></form></div>';
+                                echo '</div></div></div>';
+                            }
 
-
-                                });
-                            </script>
-
-                            <div id = 'deletedialog<?php echo $value['id']; ?>' title='Are you sure you want to delete <?php echo $value['keyword']; ?> archive?'>
-                                <br><br><center><form method='post' action='delete.php'><input type='hidden' name='id' value='<?php echo $value['id']; ?>'/><input type='submit' value='Yes'/></form></center>
-                            </div> 
-
-                            <div id = 'updatedialog<?php echo $value['id']; ?>' title='Update <?php echo $value['keyword']; ?> archive'>
-                                <br><br><center><form method='post' action='update.php'>Description<br><input name='description' value='<?php echo $value['description']; ?>'/><br><br>Tags<br><input name='tags' value='<?php echo $value['tags']; ?>'/><input type='hidden' name='id' value='<?php echo $value['id']; ?>'/><br><br><p><input type='submit' value='Update'/></p></form></center>
-                            </div> 
-                            <?php
-                            echo "<a href='#' id='updatelink" . $value['id'] . "'><img src='./resources/pencil_24.png' alt='Edit Archive' title='Edit Archive'/></a>";
-                            echo "  <a href='#' id='deletelink" . $value['id'] . "'><img src='./resources/close_2_24.png' alt='Delete Archive' title='Delete Archive'/></a>";
+                            echo "</td>";
+                            echo "</tr>";
                         }
-
-                        echo "</td>";
-                        echo "</tr>";
-                    }
-                    ?>
-
+                        ?>
                     </tbody>
                 </table>
             </div>
-            <hr>
+            <div class="row">
+                <hr>
+            </div>
             <footer>
                 <p>niceKeeper version 0.1.1 (yourTwapperKeeper <?php echo $yourtwapperkeeper_version; ?>)</p>
             </footer>
@@ -236,6 +231,5 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
         <!-- Include all compiled plugins (below), or include individual files as needed -->
         <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-        <script src="resources/js/jquery-ui-1.8.4.custom.min.js"></script>
     </body>
 </html>
