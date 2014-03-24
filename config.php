@@ -21,9 +21,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 // LOOK AT README FOR HOW TO CONFIGURE!!!!!!!!!!
 
 /* Host Information */
-$tk_your_url = "http://www.yourexample.com/";  												// make sure to include the trailing slash
-$tk_your_dir = "/var/www/html/";  															// make sure to include the trailing slash
-$youtwapperkeeper_useragent = "Your TwapperKeeper";											// change to whatever you want!
+$tk_your_url = "http://www.yourexample.com/";			// make sure to include the trailing slash
+$tk_your_dir = "/var/www/html/";				// make sure to include the trailing slash
+$tk_page_title = "niceKeeper";                                  // change to whatever you want!
+$youtwapperkeeper_useragent = "Your TwapperKeeper";		// change to whatever you want!
 
 /* Administrators - Twitter screen name(s) who can administer / start / stop archiving */
 $admin_screen_name=array('your_twitter_name'); 
@@ -50,6 +51,7 @@ define("DB_PASS", "TBD");												// change to your db password
 define("DB_NAME", "yourdbname"); 										// change to your db name
 
 /* Don't mess with this unless you want to get your hands dirty */
+$nicekeeper_version = 'version 0.1.4';
 $yourtwapperkeeper_version = "version 0.6.0";
 $archive_process_array = array('yourtwapperkeeper_crawl.php','yourtwapperkeeper_stream.php','yourtwapperkeeper_stream_process.php');
 $twitter_api_sleep_min = 11;

@@ -372,6 +372,57 @@ class YourTwapperKeeper {
     public function getNowTime() {
         return date('Y-m-d H:i:s');
     }
+    
+    /**
+     * list of Saved Archive
+     * 
+     * @global type $db
+     * @param string $id
+     * @param string $keyword
+     * @param string $description
+     * @param string $tags
+     * @param string $screen_name
+     * @param boolen $debug
+     * @return array
+     */
+    public function listSavedArchive($id = false, $keyword = false, $description = false, $tags = false, $screen_name = false, $debug = false) {
+        global $db;
+
+        $sql = 'SELECT * FROM `saved_archives` WHERE 1';
+
+        if ($id) {
+            $sql .= ' AND `id` = \'' . $id . '\'';
+        }
+
+        if ($keyword) {
+            $sql .= ' AND `keyword` LIKE \'' . $keyword . '%\'';
+        }
+
+        if ($description) {
+            $sql .= ' AND `description` LIKE \'%' . $description . '%\'';
+        }
+
+        if ($tags) {
+            $sql .= ' AND `tags` LIKE \'%' . $tags . '%\'';
+        }
+
+        if ($screen_name) {
+            $sql .= ' AND `screen_name` LIKE \'%' . $screen_name . '%\'';
+        }
+
+
+        $rs = mysql_query($sql, $db->connection);
+
+        $count = 0;
+        while ($row = mysql_fetch_assoc($rs)) {
+            $count++;
+            $response['results'][] = $row;
+        }
+
+        $response['count'] = $count;
+
+        return $response;
+    }
 
 }
 
