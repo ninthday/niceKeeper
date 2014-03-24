@@ -223,9 +223,9 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
             <div class="row">
                 <hr>
             </div>
-            <footer>
-                <p>niceKeeper <?php echo $nicekeeper_version; ?> (yourTwapperKeeper <?php echo $yourtwapperkeeper_version; ?>)</p>
-            </footer>
+            <?php
+            include_once './footer.php';
+            ?>
         </div>
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
