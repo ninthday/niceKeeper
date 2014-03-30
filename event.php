@@ -13,15 +13,17 @@
  * along with this program;
  */
 session_start();
-require_once('config.php');
-require_once('function.php');
-require_once('twitteroauth.php');
 
 // OAuth login check
 if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_token']) || empty($_SESSION['access_token']['oauth_token_secret'])) {
     $logged_in = FALSE;
     header('Location: index.php');
+    exit();
 } else {
+    require_once('config.php');
+    require_once('function.php');
+    require_once('twitteroauth.php');
+    
     $access_token = $_SESSION['access_token'];
     $connection = new TwitterOAuth($tk_oauth_consumer_key, $tk_oauth_consumer_secret, $access_token['oauth_token'], $access_token['oauth_token_secret']);
     $login_info = $connection->get('account/verify_credentials');
@@ -53,9 +55,9 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
                 </div>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="#">Runing Archive</a></li>
+                        <li><a href="index.php">Runing Archive</a></li>
                         <li><a href="view_saved.php">Saved Archive</a></li>
-                        <li><a href="#contact">Event</a></li>
+                        <li class="active"><a href="#">Event</a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
                             <ul class="dropdown-menu">
@@ -116,7 +118,7 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
             </div>
             <div class="row">
                 <div class="well">
-                    <form class="form-inline" action='create.php' method='post' role="form">
+                    <form class="form-inline" action='create_event.php' method='post' role="form">
                         <div class="form-group">
                             <label class="sr-only" for="evntitle">Event Title</label>
                             <input type="text"  name="evntitle" class="form-control" id="evntitle" placeholder="Event Title">
@@ -129,7 +131,6 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
                             <label class="sr-only" for="InputTime">Event Time</label>
                             <input type="text" name="evnTime" class="form-control" id="InputTime" placeholder="Event Times" data-date-format="YYYY-MM-DD">
                         </div>
-                        <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Add Event</button>
                         <input type='submit' class="btn btn-primary" value ='Add Event'/>
                     </form>
                 </div>
@@ -148,7 +149,7 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
         <script src="resources/js/moment.min.js"></script>
         <script src="resources/js/bootstrap-datetimepicker.min.js"></script>
         <script type="text/javascript">
-            $(document).ready(function(){
+            $(document).ready(function() {
                 $("#InputTime").datetimepicker({
                     pickTime: false
                 });

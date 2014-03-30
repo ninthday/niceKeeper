@@ -372,7 +372,7 @@ class YourTwapperKeeper {
     public function getNowTime() {
         return date('Y-m-d H:i:s');
     }
-    
+
     /**
      * list of Saved Archive
      * 
@@ -424,6 +424,71 @@ class YourTwapperKeeper {
         return $response;
     }
 
+    /**
+     * Create event 
+     * 
+     * @global type $db
+     * @param string $title
+     * @param string $description
+     * @param date $event_time
+     * @param string $screen_name
+     * @return array
+     */
+    public function createEvent($title, $description, $event_time, $screen_name) {
+        global $db;
+        $rtn = array();
+        $sql = 'INSERT INTO `event`(`e_title`, `e_description`, `e_event_time`, `screen_name`, `e_create_time`) '
+                . 'VALUES (\'' . $title . '\', \'' . $description . '\',\'' . $event_time . '\', \'' . $screen_name . '\', \'' . $this->getNowTime() . '\')';
+        $rs = mysql_query($sql, $db->connection);
+        if (!$rs) {
+            $rtn[0] = FALSE;
+            $rtn[1] = 'It has problem in Save Event to table.';
+        } else {
+            $rtn[0] = TRUE;
+            $rtn[1] = 'Event has been created.';
+        }
+        return $rtn;
+    }
+
+    /**
+     * Add archive to Event.
+     * 
+     * @global type $db
+     * @param int $event_id
+     * @param int $archive_id
+     * @return array
+     */
+    public function addEARelation($event_id, $archive_id) {
+        global $db;
+        $rtn = array();
+        $sql = 'INSERT INTO `event_archive`(`e_id`, `a_id`) VALUES (' . $event_id . ', ' . $archive_id . ')';
+        $rs = mysql_query($sql, $db->connection);
+        if (!$rs) {
+            $rtn[0] = FALSE;
+            $rtn[1] = 'It has problem in Add Archive to Event.';
+        }else{
+            $rtn[0] = TRUE;
+            $rtn[1] = 'Archive has add to Event.';
+        }
+        return $rtn;
+    }
+    
+    public function listUserEvent($screen_name=''){
+        global $db;
+        $rtn = array();
+        $sql = 'SELECT * FROM `event` WHERE `screen_name` = \'' . $screen_name . '\'';
+        $rs = mysql_query($sql, $db->connection);
+        
+        $count = 0;
+        while ($row = mysql_fetch_assoc($rs)) {
+            $count++;
+            $rtn['results'][] = $row;
+        }
+
+        $rtn['count'] = $count;
+        return $rtn;
+    }
+    
 }
 
 $tk = new YourTwapperKeeper;
