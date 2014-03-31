@@ -23,7 +23,7 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
     require_once('config.php');
     require_once('function.php');
     require_once('twitteroauth.php');
-    
+
     $access_token = $_SESSION['access_token'];
     $connection = new TwitterOAuth($tk_oauth_consumer_key, $tk_oauth_consumer_secret, $access_token['oauth_token'], $access_token['oauth_token_secret']);
     $login_info = $connection->get('account/verify_credentials');
@@ -39,6 +39,7 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="resources/css/bootstrap-datetimepicker.min.css">
+        <link rel="stylesheet" href="css/nicekeeper.css">
     </head>
     <body>
         <!-- Fixed navbar -->
@@ -79,10 +80,10 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
         </div>
         <div class="container" style="margin-top: 60px;" role="main">
             <div class="row">
-                <div class="col-xs-9">
+                <div class="col-md-9">
                     <p><center><a href='index.php'><img src='resources/ownerLogo.png'/></a></center></p>
                 </div>
-                <div class="col-xs-3">
+                <div class="col-md-3">
                     <?php
                     $archiving_status = $tk->statusArchiving($archive_process_array);
                     $stat_color = ($archiving_status[0]) ? 'success' : 'danger';
@@ -117,22 +118,56 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
                 <hr>
             </div>
             <div class="row">
-                <div class="well">
-                    <form class="form-inline" action='create_event.php' method='post' role="form">
-                        <div class="form-group">
-                            <label class="sr-only" for="evntitle">Event Title</label>
-                            <input type="text"  name="evntitle" class="form-control" id="evntitle" placeholder="Event Title">
+                <div class="col-xs-12">
+                    <div class="well">
+                        <form class="form-inline" action='create_event.php' method='post' role="form">
+                            <div class="form-group">
+                                <h4><span class="glyphicon glyphicon-flag"></span>&nbsp;</h4>
+                            </div>
+                            <div class="form-group">
+                                <label class="sr-only" for="evntitle">Event Title</label>
+                                <input type="text"  name="evntitle" class="form-control" id="evntitle" placeholder="Event Title">
+                            </div>
+                            <div class="form-group">
+                                <label class="sr-only" for="InputDescription">Description</label>
+                                <input type="text" name="description" class="form-control" id="InputDescription" placeholder="Description">
+                            </div>
+                            <div class="form-group">
+                                <label class="sr-only" for="InputTime">Event Time</label>
+                                <input type="text" name="evnTime" class="form-control" id="InputTime" placeholder="Event Times" data-date-format="YYYY-MM-DD">
+                            </div>
+                            <input type='submit' class="btn btn-primary" value ='Add Event'/>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <hr>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="bubble">
+                        <div class="bubble-inblock">
+                            <h4><span class="glyphicon glyphicon-flag"></span>123
+                                <div class="pull-right">
+                                    <span class="label label-danger" title="Runing Archives"><span class="glyphicon glyphicon-inbox"></span>&nbsp;2</span>
+                                    <span class="label label-success" title="Saved Archives"><span class="glyphicon glyphicon-inbox"></span>&nbsp;4</span>
+                                </div>
+                            </h4>
                         </div>
-                        <div class="form-group">
-                            <label class="sr-only" for="InputDescription">Description</label>
-                            <input type="text" name="description" class="form-control" id="InputDescription" placeholder="Description">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="bubble">
+                        <div class="bubble-inblock">
+                            <div class="event-head">
+                                <h4><span class="glyphicon glyphicon-flag"></span>123</h4>
+                            </div>
+                            <div class="event-body">
+                                <hr>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label class="sr-only" for="InputTime">Event Time</label>
-                            <input type="text" name="evnTime" class="form-control" id="InputTime" placeholder="Event Times" data-date-format="YYYY-MM-DD">
-                        </div>
-                        <input type='submit' class="btn btn-primary" value ='Add Event'/>
-                    </form>
+                    </div>
                 </div>
             </div>
             <div class="row">

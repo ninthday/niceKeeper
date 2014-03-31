@@ -1,0 +1,32 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Mar 31, 2014, 3:46:07 PM
+    Author     : jeffy
+*/
+
+.bubble{
+    margin: 5px 0;
+    padding:3px;
+    background:#eee;
+    border-radius:3px;
+}
+
+.bubble-inblock{
+    border: 1px solid #C9C9C9;
+    background-color: #F8F8F8;
+    padding: 5px;
+}
+
+.bubble-title {
+    margin: 10px -3px;
+    padding: 5px 10px;
+    background-color: #F0F0F0;
+    color: #666;
+    font-weight: bold;
+    font-size: 24px;
+    text-shadow: 1px 1px 1px white;
+}
