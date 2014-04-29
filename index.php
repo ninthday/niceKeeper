@@ -95,10 +95,10 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
 
         <div class="container" style="margin-top: 60px;" role="main">
             <div class="row">
-                <div class="col-xs-9">
+                <div class="col-md-9">
                     <p><center><a href='index.php'><img src='resources/ownerLogo.png'/></a></center></p>
                 </div>
-                <div class="col-xs-3">
+                <div class="col-md-3">
                     <?php
                     $archiving_status = $tk->statusArchiving($archive_process_array);
                     $stat_color = ($archiving_status[0]) ? 'success' : 'danger';
