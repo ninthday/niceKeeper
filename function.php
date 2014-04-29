@@ -40,28 +40,29 @@ class YourTwapperKeeper {
     function listArchive($id = false, $keyword = false, $description = false, $tags = false, $screen_name = false, $debug = false) {
         global $db;
 
-        $q = "select * from archives where 1";
+        $q = "SELECT * FROM `archives` WHERE 1";
 
         if ($id) {
             $q .= " and id = '$id'";
         }
 
         if ($keyword) {
-            $q .= " and keyword like '%$keyword%'";
+            $q .= " and `keyword like` '%$keyword%'";
         }
 
         if ($description) {
-            $q .= " and description like '%$description%'";
+            $q .= " and `description` like '%$description%'";
         }
 
         if ($tags) {
-            $q .= " and tags like '%$tags%";
+            $q .= " and `tags` like '%$tags%";
         }
 
         if ($screen_name) {
-            $q .= " and screen_name like '%$screen_name%";
+            $q .= " and `screen_name` like '%$screen_name%";
         }
-
+        // @ninthday: Order by id.
+        $q .= " ORDER BY `archives`.`id` DESC";
 
         $r = mysql_query($q, $db->connection);
 
