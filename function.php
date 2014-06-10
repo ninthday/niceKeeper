@@ -443,10 +443,37 @@ class YourTwapperKeeper {
         $rs = mysql_query($sql, $db->connection);
         if (!$rs) {
             $rtn[0] = FALSE;
-            $rtn[1] = 'It has problem in Save Event to table.';
+            $rtn[1] = 'It has a problem in Save Event to table.';
         } else {
             $rtn[0] = TRUE;
             $rtn[1] = 'Event has been created.';
+        }
+        return $rtn;
+    }
+    /**
+     * Counting rows during two weeks. Return by day
+     * @global type $db
+     * @param int $archive_id
+     * @return array [0]:TRUE or FALSE [1]: count string
+     */
+    public function countRowByID($archive_id){
+        global $db;
+        $rtn = array();
+        $sql ='SELECT FROM_UNIXTIME(`time`, \'%Y-%m-%d\') AS `MYDATE`, COUNT(*) AS `CTN` FROM `z_' . $archive_id . '` 
+            WHERE `time` > UNIX_TIMESTAMP(CONCAT(DATE_SUB(CURDATE(), INTERVAL 14 DAY), \' 23:59:59\'))
+            GROUP BY `MYDATE`
+            ORDER BY `MYDATE`';
+        $rs = mysql_query($sql, $db->connection);
+        if (!$rs) {
+            $rtn[0] = FALSE;
+            $rtn[1] = 'It has a problem in count how many ROWS during this two weeks.';
+        } else {
+            $rtn[0] = TRUE;
+            $aryCount = array();
+            while ($row = mysql_fetch_assoc($rs)) {
+                array_push($aryCount, $row['CTN']);
+            }
+            $rtn[1] = implode(', ', $aryCount);
         }
         return $rtn;
     }

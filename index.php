@@ -166,7 +166,7 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>Archive ID</th><th>Keyword / Hashtag</th><th>Description</th><th>Tags</th><th>Screen Name</th><th>Count</th><th>Create Time</th><th></th>
+                            <th>ID</th><th>Line</th><th>Keyword / Hashtag</th><th>Description</th><th>Tags</th><th>Screen Name</th><th>Count</th><th>Create Time</th><th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -174,7 +174,11 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
                         // list table of archives
                         $archives = $tk->listArchive();
                         foreach ($archives['results'] as $value) {
-                            echo "<tr><td>" . $value['id'] . "</td><td>" . $value['keyword'] . "</td><td>" . $value['description'] . "</td><td>" . $value['tags'] . "</td><td>" . $value['screen_name'] . "</td><td>" . $value['count'] . "</td><td>" . $value['create_time'] . "</td>";
+                            echo "<tr><td>" . $value['id'] . "</td>";
+                            echo "<td><span class=\"inlinesparkline\">";
+                            $rtnCount = $tk->countRowByID($value['id']);
+                            echo ($rtnCount[0])?$rtnCount[1]:'error';
+                            echo "</span></td><td>" . $value['keyword'] . "</td><td>" . $value['description'] . "</td><td>" . $value['tags'] . "</td><td>" . $value['screen_name'] . "</td><td>" . $value['count'] . "</td><td>" . $value['create_time'] . "</td>";
                             echo "<td>";
                             echo '<a href="archive.php?id=' . $value['id'] . '" class="btn btn-warning" title="View Archive" target="_blank"><span class="glyphicon glyphicon-th-list"></span></a>';
                             if (isset($_SESSION['access_token']) && ($_SESSION['access_token']['screen_name'] == $value['screen_name'])) {
@@ -231,5 +235,15 @@ if (empty($_SESSION['access_token']) || empty($_SESSION['access_token']['oauth_t
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
         <!-- Include all compiled plugins (below), or include individual files as needed -->
         <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="resources/js/jquery.sparkline.min.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $('.inlinesparkline').sparkline('html',{
+                    type: 'line',
+                    width: '90',
+                    height: '30'});
+            });
+        </script>
     </body>
 </html>
