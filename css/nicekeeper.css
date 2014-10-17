@@ -15,6 +15,10 @@ and open the template in the editor.
     border-radius:3px;
 }
 
+.clear {
+    clear: both;
+}
+
 .bubble-inblock{
     border: 1px solid #C9C9C9;
     background-color: #F8F8F8;
